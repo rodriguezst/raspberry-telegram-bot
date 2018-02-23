@@ -132,6 +132,24 @@ bot.onText(/^\/cpu$/, function(msg, match){
 	}
 });
 
+bot.onText(/^\/mem$/, function(msg, match){
+	var reply = "";
+	if(msg.chat.id == AUTHID){
+		child = exec("grep  'Mem' /proc/meminfo", function (error, stdout, stderr) {
+			if (error !== null) {
+				console.log('exec error: ' + error);
+				reply = "Error: " + error;
+				send(reply, msg.chat.id);
+			} else {
+				var mem = (stdout);
+				reply = mem;
+				console.log(msg.chat.id);
+				send(reply, msg.chat.id);
+			}
+		});
+	}
+});
+
 bot.onText(/^\/myid$/, function(msg, match){
 	send("Your unique ID is: "+msg.chat.id, msg.chat.id);
   send("Insert this in 'my-telegram-id' in your bot.js", msg.chat.id);
