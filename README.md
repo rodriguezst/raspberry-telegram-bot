@@ -54,6 +54,7 @@ Currently supported bot commands:
 - `/reboot` - Reboot your RaspberryPi
 - `/temp_limit on 60` - Turn on the temperature warning limit and set threshold on 50 celsius degrees. When your RaspberryPi reach or exceeds the given threshold your bot will send you a message with a warning. **NOTE** If temperature warning is already on, you can change the current temperature limit sending again the `/temp_limit on newtemp`
 - `/temp_limit off` - Turn off the temperature limit (if on).
+- `/mem - Check the current usage of RAM
 - `/myid` - Usefull command for get your Telegram unique id for the first setup.
 
 **NOTE**: Currently, the temperature limit will reset on 60° (default) when the Node.js bot restarts. I will implement a simple temp save soon.
