@@ -17,7 +17,7 @@ First of all install Node.js on your RaspberryPi (if not yet installed or upgrad
 1. Use the following terminal commands for install the latest Node.js version (more on nodesource https://github.com/nodesource/distributions)
 
 ```
-curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+curl -sL https://deb.nodesource.com/setup_9.x | sudo -E bash -
 sudo apt-get install -y nodejs
 sudo apt-get install -y build-essential
 ```
