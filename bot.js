@@ -168,6 +168,24 @@ bot.onText(/^\/sd_space$/, function(msg, match){
 	}
 });
 
+bot.onText(/^\/uptime$/, function(msg, match){
+        var reply = "";
+        if(msg.chat.id == AUTHID){
+                child = exec("uptime -p", function (error, stdout, stderr) {
+                        if (error !== null) {
+                                console.log('exec error: ' + error);
+                                reply = "Error: " + error;
+                                send(reply, msg.chat.id);
+                        } else {
+                                var sd_space = (stdout);
+                                reply = sd_space;
+                                console.log(msg.chat.id);
+                                send(reply, msg.chat.id);
+                        }
+                });
+        }
+});
+
 bot.onText(/^\/myid$/, function(msg, match){
 	send("Your unique ID is: "+msg.chat.id, msg.chat.id);
   send("Insert this in 'my-telegram-id' in your bot.js", msg.chat.id);
