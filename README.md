@@ -1,12 +1,6 @@
 #RaspberryPi Telegram bot
 
-This is a simple bot for Telegram to control temperatures \ CPU usage or launch commands on your RaspberryPi. Is just a simple bot base easly expandable with several new commands.
-
-Support commands and auto-notify. When the Node.js bot will go up (example. after a RaspberryPi reboot) the bot will notify you with a message.
-
-Find more infos on my blog https://pluma-redsamk.rhcloud.com/. (Soon will be posted an article about this bot with a tutorial).
-
-This bot is tested on a RaspberryPi 3, but is supposed to work on any RaspberryPi with Node.js installed
+This is a simple bot for Telegram to run scripts on your RaspberryPi.
 
 ##Setup
 
@@ -48,49 +42,14 @@ This is a brief tutorial on how let the bot start automatically on Raspi bootup.
 
 Currently supported bot commands:
 
-- When the Node.js bot will go up (example. after a RaspberryPi reboot) the bot will notify you with a message.
-- `/temp` - Check the current temperature of your RaspberryPi
-- `/cpu` - Check the current CPU usage % of your RaspberryPi
 - `/reboot` - Reboot your RaspberryPi
-- `/temp_limit on 60` - Turn on the temperature warning limit and set threshold on 50 celsius degrees. When your RaspberryPi reach or exceeds the given threshold your bot will send you a message with a warning. **NOTE** If temperature warning is already on, you can change the current temperature limit sending again the `/temp_limit on newtemp`
-- `/temp_limit off` - Turn off the temperature limit (if on).
-- `/mem - Check the current usage of RAM
+- `/run script_name` - Execute scripts/script_name.sh and reply with the script output
 - `/myid` - Usefull command for get your Telegram unique id for the first setup.
-
-**NOTE**: Currently, the temperature limit will reset on 60° (default) when the Node.js bot restarts. I will implement a simple temp save soon.
 
 ##How to add your command
 
-Just insert a new command at the end of the file in bot.js following this snippet:
-
-```
-bot.onText(/^\/mycommand$/, function (msg, match) {
-	if(msg.chat.id == AUTHID){
-    //insert here your command code
-    send("Hello!", msg.chat.id);
-	}
-});
-```
-
-Use Javascript Regular expression (like `/^\/mycommand$/`) for parse your command and your parameters (if any). In the snippet example the regex will recognize the command `/mycommand`. Some usefull regex guide on https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
-
-Use `send(message, msg.chat.id)` inside your command code for send a message. In this case `msg.chat.id` is the id of who sent you the command.
-
-You can use the send function outside the command snippet of code; example: `send("Hello!", AUTHID)`, `AUTHID` is the variable with your unique id. In this case the bot will send a message to you.
-
-##Example#. How to add a number (with 2 digit) parameter
-
-```
-bot.onText(/^\/mycommand (\d{2})$/, function (msg, match) {
-	if(msg.chat.id == AUTHID){
-    var myParam = match[1];
-    //insert here your command code
-    //use myParam for something
-	}
-});
-```
-
-In the `match` array you will find all your parameters (ignore match[0] is the textual part of the command).
+Create a file inside scripts directory and save it as "my_new_file.sh".
+Call it by sending "/run my_new_file".
 
 ##Packages used
 
