@@ -16,82 +16,26 @@ var sys = require('util'),
   child;
 
 
-console.log('Bot @'+botname+' - server started...');
+//console.log('Bot @'+botname+' - server started...');
 
 
-send("@"+botname+" is now up!", AUTHID); //THE BOT WILL SEND THIS MESSAGE AT THE START
+//send("@"+botname+" is now up!", AUTHID); //THE BOT WILL SEND THIS MESSAGE AT THE START
 
-
-bot.onText(/^\/temp_limit on (\d{2})$/, function (msg, match) {
-	var limit = match[1];
-	console.log(limit);
-	if(msg.chat.id == AUTHID){
-		if(tempLimitToggle == false){
-			tempLimitToggle = true;
-			TEMP_LIMIT = limit;
-			if (setIntervalTemp) clearInterval(setIntervalTemp);
-			setIntervalTemp = setInterval(function(){
-								if(tempLimitToggle)
-								child = exec("cat /sys/class/thermal/thermal_zone0/temp", function (error, stdout, stderr) {
-										if (error == null){
-											var temp = parseFloat(stdout)/1000;
-											if(temp>=TEMP_LIMIT){
-												console.log("reached");
-												send("WARNING!: " + TEMP_LIMIT + "° reached! Temp: " + temp + "°", AUTHID);
-											}
-										}
-									});
-							},10000);
-			send("Warning for temperature limit ON: "+limit+"°", msg.chat.id);
-
-		}else{
-			TEMP_LIMIT = limit;
-			send("Warning for temperature limit updated to: " + TEMP_LIMIT + "°", msg.chat.id);
-		}
-	}
-});
-
-bot.onText(/^\/temp_limit off$/, function (msg, match) {
-	if(msg.chat.id == AUTHID){
-		if(tempLimitToggle == true){
-			tempLimitToggle = false;
-			clearInterval(setIntervalTemp);
-			send("Warning for temperature limit OFF!", msg.chat.id);
-		}
-	}
-});
-
-bot.onText(/^\/temp$/, function(msg, match){
+//RUN CUSTOM SCRIPTS STORED IN scripts/ directory
+//USAGE: "/run script_name" -> sh scripts/script_name.sh
+bot.onText(/^\/run ([a-z_]+)$/, function(msg, match){
 	var reply = "";
 	if(msg.chat.id == AUTHID){
-		child = exec("cat /sys/class/thermal/thermal_zone0/temp", function (error, stdout, stderr) {
+		command = "sh " + __dirname + "/scripts/" + match[1].replace(/[^a-z_]/gi, '') + ".sh";
+		//send("Executing " + command, msg.chat.id);
+		console.log(command);
+		child = exec(command, function (error, stdout, stderr) {
 			if (error !== null) {
 				console.log('exec error: ' + error);
 				reply = "Error: " + error;
 				send(reply, msg.chat.id);
 			} else {
-				var temp = parseFloat(stdout)/1000;
-				reply = "Temperature: " + temp + "°";
-				console.log(msg.chat.id);
-				send(reply, msg.chat.id);
-			}
-		});
-	}
-});
-
-bot.onText(/^\/cpu$/, function(msg, match){
-	var reply = "";
-	if(msg.chat.id == AUTHID){
-		child = exec("top -d 0.5 -b -n2 | grep 'Cpu(s)'|tail -n 1 | awk '{print $2 + $4}'", function (error, stdout, stderr) {
-			if (error !== null) {
-				console.log('exec error: ' + error);
-				reply = "Error: " + error;
-				send(reply, msg.chat.id);
-			} else {
-				var cpu = parseFloat(stdout);
-				reply = "CPU Load: " + cpu + "%";
-				console.log(msg.chat.id);
-				send(reply, msg.chat.id);
+				send(stdout, msg.chat.id);
 			}
 		});
 	}
@@ -112,78 +56,6 @@ bot.onText(/^\/reboot$/, function(msg, match){
 			});
 		},5000);
 	}
-});
-
-bot.onText(/^\/cpu$/, function(msg, match){
-	var reply = "";
-	if(msg.chat.id == AUTHID){
-		child = exec("top -d 0.5 -b -n2 | grep 'Cpu(s)'|tail -n 1 | awk '{print $2 + $4}'", function (error, stdout, stderr) {
-			if (error !== null) {
-				console.log('exec error: ' + error);
-				reply = "Error: " + error;
-				send(reply, msg.chat.id);
-			} else {
-				var cpu = parseFloat(stdout);
-				reply = "CPU Load: " + cpu + "%";
-				console.log(msg.chat.id);
-				send(reply, msg.chat.id);
-			}
-		});
-	}
-});
-
-bot.onText(/^\/mem$/, function(msg, match){
-	var reply = "";
-	if(msg.chat.id == AUTHID){
-		child = exec("grep  'Mem' /proc/meminfo", function (error, stdout, stderr) {
-			if (error !== null) {
-				console.log('exec error: ' + error);
-				reply = "Error: " + error;
-				send(reply, msg.chat.id);
-			} else {
-				var mem = (stdout);
-				reply = mem;
-				console.log(msg.chat.id);
-				send(reply, msg.chat.id);
-			}
-		});
-	}
-});
-
-bot.onText(/^\/sd_space$/, function(msg, match){
-	var reply = "";
-	if(msg.chat.id == AUTHID){
-		child = exec("df --output=used,avail /", function (error, stdout, stderr) {
-			if (error !== null) {
-				console.log('exec error: ' + error);
-				reply = "Error: " + error;
-				send(reply, msg.chat.id);
-			} else {
-				var sd_space = (stdout);
-				reply = sd_space;
-				console.log(msg.chat.id);
-				send(reply, msg.chat.id);
-			}
-		});
-	}
-});
-
-bot.onText(/^\/uptime$/, function(msg, match){
-        var reply = "";
-        if(msg.chat.id == AUTHID){
-                child = exec("uptime -p", function (error, stdout, stderr) {
-                        if (error !== null) {
-                                console.log('exec error: ' + error);
-                                reply = "Error: " + error;
-                                send(reply, msg.chat.id);
-                        } else {
-                                var sd_space = (stdout);
-                                reply = sd_space;
-                                console.log(msg.chat.id);
-                                send(reply, msg.chat.id);
-                        }
-                });
-        }
 });
 
 bot.onText(/^\/myid$/, function(msg, match){
