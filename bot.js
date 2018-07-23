@@ -3,11 +3,6 @@ var token = 'my-telegram-bot-token'; //INSERT HERE YOUR AUTHENTICATION TOKEN PRO
 var AUTHID = 'my-telegram-id'; //INSERT HERE YOUR UNIQUE ID, YOU CAN FIND IT STARTING THE BOT AND SENDING THE COMMAND /myid
 var botname = 'my-bot-name'; //INSERT YOUR YOUR BOT NAME (OR WHAT YOU PREFERE)
 
-
-var TEMP_LIMIT = 60;
-var tempLimitToggle = false;
-var setIntervalTemp;
-
 var Bot = require('node-telegram-bot-api'),
     bot = new Bot(token, { polling: true });
 
